@@ -1,0 +1,95 @@
+buildscript {
+    ext.kotlin_version = '1.2.41'
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.8.0"
+}
+
+
+group 'com.squins.media.conversion'
+version '0.2-SNAPSHOT'
+
+apply plugin: 'kotlin'
+apply plugin: 'maven-publish'
+apply plugin: "maven"
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compileOnly gradleApi()
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.kotlin
+}
+
+
+artifacts {
+    archives sourcesJar
+}
+
+
+if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
+
+    publishing {
+        publications {
+            Release(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+
+                from components.java
+            }
+        }
+    }
+
+    bintray {
+        user = bintrayUser
+        key = bintrayKey
+        publications = ['Release']
+        configurations = ['archives']
+        pkg {
+            userOrg = 'squins'
+            repo = 'Squins'
+            name = project.name
+            desc = 'Media conversion Gradle plugin '
+            licenses = ['Apache-2.0']
+            websiteUrl = 'https://github.com/squins/media-conversion-gradle-plugin'
+            issueTrackerUrl = 'https://github.com/squins/media-conversion-gradle-plugin/issues'
+            vcsUrl = 'git@github.com:squins/media-conversion-gradle-plugin.git'
+            githubRepo = 'squins/https://github.com/squins/media-conversion-gradle-plugin'
+            version {
+                name = project.version
+                released = new Date()
+                vcsTag = "release-${project.version}"
+            }
+        }
+    }
+
+    bintrayUpload.dependsOn check, jar, sourcesJar, 'generatePomFileForReleasePublication'
+    publishToMavenLocal.dependsOn check, jar, sourcesJar, 'generatePomFileForReleasePublication'
+}
+
+install.dependsOn sourcesJar
