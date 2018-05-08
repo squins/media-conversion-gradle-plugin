@@ -70,3 +70,15 @@ Add to `build.gradle`:
 ## Exporting PNG files in different sizes
 
 Given a file src/main/svg/icon.svg that has to be exported in multiple sizes, a file icon.svg.groovy can be created. To export it in two sizes (512x512 and 1024x1024) contents of icon.svg.groovy have to be:
+    
+    
+    [
+            'icon-512x512.svg'       : [
+                    width : 512,
+                    height: 512
+            ],
+            'icon-1024x1024.svg'         : [
+                    width : 1024,
+                    height: 1024
+            ]
+    ]
