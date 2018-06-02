@@ -26,10 +26,8 @@ public class ConversionProcessRunner implements Runnable {
     }
 
     private void tryToRunProcess(String[] commandLineArguments, File inputFile) throws IOException, InterruptedException {
-
         System.out.println("Start process: " + inputFile.getName());
         Process process = Runtime.getRuntime().exec(commandLineArguments);
-
         System.out.println("Finished process: " + inputFile.getName());
 
         saveErrorOutput(process);

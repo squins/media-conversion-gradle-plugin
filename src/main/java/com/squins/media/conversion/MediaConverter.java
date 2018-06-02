@@ -1,6 +1,7 @@
 package com.squins.media.conversion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.squins.media.conversion.commandline.CommandLineArgument;
@@ -17,7 +18,8 @@ import org.gradle.internal.reflect.DirectInstantiator;
 public class MediaConverter implements Named {
     private String name;
     private List<CommandLineArgument> commandLineArguments = new ArrayList<>();
-    private NamedDomainObjectContainer<MediaConverter> variants = new FactoryNamedDomainObjectContainer<MediaConverter>(MediaConverter.class, DirectInstantiator.INSTANCE);
+    private NamedDomainObjectContainer<MediaConverter> variants = new FactoryNamedDomainObjectContainer<>(MediaConverter.class, DirectInstantiator.INSTANCE);
+    private List<String> optionalVariantProperties = new ArrayList<>();
 
     public MediaConverter(String name) {
         this.name = name;
@@ -68,11 +70,15 @@ public class MediaConverter implements Named {
     }
 
     public VariantProperty variantProperty(String propertyName) {
-        return new VariantProperty(propertyName);
+        return new VariantProperty(propertyName, !optionalVariantProperties.contains(propertyName));
     }
 
     public void variants(Closure<?> closure) {
         variants.configure(closure);
+    }
+
+    public void optionalVariantProperties(String... optionalVariantProperties) {
+        this.optionalVariantProperties = Arrays.asList(optionalVariantProperties);
     }
 
     public NamedDomainObjectContainer<MediaConverter> getVariants() {

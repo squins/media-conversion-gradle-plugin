@@ -25,6 +25,7 @@ import org.gradle.api.Task;
 import org.gradle.tooling.BuildException;
 
 class MediaConversionTaskBody implements Action<Task> {
+
     public static final int MAX_NUMBER_OF_CONCURRENT_CONVERSIONS = 18;
 
     private final Project project;
@@ -33,8 +34,8 @@ class MediaConversionTaskBody implements Action<Task> {
     private final File inputDirectory;
     private final File outputDirectory;
     private ExecutorService executorService;
-    private List<ConversionProcessRunner> conversionProcessRunners = new ArrayList<ConversionProcessRunner>();
-    private Map<String, String> outputToInputFileMapping = new HashMap<String, String>();
+    private List<ConversionProcessRunner> conversionProcessRunners = new ArrayList<>();
+    private Map<String, String> outputToInputFileMapping = new HashMap<>();
 
     public MediaConversionTaskBody(Project project, MediaConversionExtensionProperties mediaConversionExtension, MediaRootFolder rootFolder, File inputDirectory, File outputDirectory) {
         this.project = project;
@@ -181,7 +182,7 @@ class MediaConversionTaskBody implements Action<Task> {
         NamedDomainObjectContainer<MediaSubFolder> subFolders = rootFolder.getSubFolders();
         for (MediaSubFolder subFolder : subFolders) {
             if (relativeSubFolderPath.startsWith(subFolder.getName())) {
-                result = new HashSet<String>(subFolder.getConverterVariants());
+                result = new HashSet<>(subFolder.getConverterVariants());
             }
         }
 
@@ -217,7 +218,7 @@ class MediaConversionTaskBody implements Action<Task> {
     }
 
     private List<File> getOutputFilesOfAllVariants(MediaConverter converter, Map<String, Map<String, Object>> fileVariants, File inputFile, File outputFile) {
-        List<File> result = new ArrayList<File>();
+        List<File> result = new ArrayList<>();
 
         for (Map.Entry<String, Map<String, Object>> fileVariant : fileVariants.entrySet()) {
             List<File> conversionOutputFilesOfVariant = getOutputFiles(converter, fileVariant, inputFile, outputFile);
@@ -278,7 +279,7 @@ class MediaConversionTaskBody implements Action<Task> {
     }
 
     private List<File> getOutputFiles(MediaConverter converter, Map<String, Object> fileVariantProperties, File inputFile, File outputFile) {
-        List<File> result = new ArrayList<File>();
+        List<File> result = new ArrayList<>();
 
         for (CommandLineArgument commandLineArgument : converter.getCommandLineArguments()) {
             addConversionOutputFileIfArgumentIsOutputFilePath(commandLineArgument, fileVariantProperties, inputFile, outputFile, result);
@@ -321,15 +322,20 @@ class MediaConversionTaskBody implements Action<Task> {
     }
 
     private String[] getEffectiveCommandLineArguments(MediaConverter converter, Map<String, Object> fileVariantProperties, File inputFile, File outputFile) {
-        String[] result = new String[converter.getCommandLineArguments().size()];
+        List<String> result = new ArrayList<>();
 
-        int argumentIndex = 0;
         for (CommandLineArgument commandLineArgument : converter.getCommandLineArguments()) {
-            result[argumentIndex] = commandLineArgument.resolve(fileVariantProperties, inputFile.getPath(), outputFile.getPath());
-            argumentIndex++;
+            String argument = commandLineArgument.resolve(fileVariantProperties, inputFile.getPath(), outputFile.getPath());
+
+            if (argument == null) {
+                // remove name.
+                result.remove(result.size() - 1);
+            } else {
+                result.add(argument);
+            }
         }
 
-        return result;
+        return result.toArray(new String[0]);
     }
 
     private boolean isInputNewer(File inputFile, List<File> outputFiles) {
@@ -383,3 +389,4 @@ class MediaConversionTaskBody implements Action<Task> {
         }
     }
 }
+
