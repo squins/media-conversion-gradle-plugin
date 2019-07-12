@@ -1,6 +1,14 @@
 package com.squins.media.conversion;
 
-import static org.gradle.util.GFileUtils.copyFile;
+import com.squins.media.conversion.commandline.CommandLineArgument;
+import com.squins.media.conversion.commandline.OutputFilePath;
+import groovy.lang.GroovyShell;
+import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.tooling.BuildException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.squins.media.conversion.commandline.CommandLineArgument;
-import com.squins.media.conversion.commandline.OutputFilePath;
-import groovy.lang.GroovyShell;
-import org.gradle.api.Action;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.tooling.BuildException;
+import static org.gradle.util.GFileUtils.copyFile;
 
 class MediaConversionTaskBody implements Action<Task> {
 
@@ -47,7 +48,7 @@ class MediaConversionTaskBody implements Action<Task> {
     }
 
     @Override
-    public void execute(Task task) {
+    public void execute(@NotNull Task task) {
         processDirectory(inputDirectory, outputDirectory, "");
 
         executorService.shutdown();
@@ -241,7 +242,7 @@ class MediaConversionTaskBody implements Action<Task> {
         if (file.exists()) {
             result = loadFileVariantsFile(file);
         } else {
-            result = Collections.singletonMap(inputFile.getName(), Collections.<String, Object>emptyMap());
+            result = Collections.singletonMap(inputFile.getName(), Collections.emptyMap());
         }
 
         return result;
@@ -260,6 +261,7 @@ class MediaConversionTaskBody implements Action<Task> {
     }
 
     private Map<String, Map<String, Object>> tryToLoadFileVariantsFile(File file) throws IOException {
+        //noinspection unchecked
         return (Map<String, Map<String, Object>>) new GroovyShell().evaluate(file);
     }
 

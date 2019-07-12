@@ -28,12 +28,7 @@ public class VariantProperty implements CommandLineArgument {
     }
 
     private Object retrievePropertyValue(Map<String, Object> variantProperties) {
-        final Object value = variantProperties.get(propertyName);
-
-        if (value != null) {
-            return value;
-        }
-        return null;
+        return variantProperties.get(propertyName);
     }
 
     private void assertPropertyValueSpecified(Object optionalValue) {
