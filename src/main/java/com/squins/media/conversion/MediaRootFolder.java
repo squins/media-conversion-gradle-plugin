@@ -5,9 +5,12 @@ import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.internal.FactoryNamedDomainObjectContainer;
 import org.gradle.internal.reflect.DirectInstantiator;
 
+import static org.gradle.api.internal.CollectionCallbackActionDecorator.NOOP;
+
 public class MediaRootFolder {
     private String name;
-    private NamedDomainObjectContainer<MediaSubFolder> subFolders = new FactoryNamedDomainObjectContainer<MediaSubFolder>(MediaSubFolder.class, DirectInstantiator.INSTANCE);
+    private NamedDomainObjectContainer<MediaSubFolder> subFolders =
+            new FactoryNamedDomainObjectContainer<>(MediaSubFolder.class, DirectInstantiator.INSTANCE, MediaSubFolder::new, NOOP);
 
     public MediaRootFolder(String name) {
         this.name = name;

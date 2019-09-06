@@ -1,9 +1,5 @@
 package com.squins.media.conversion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.squins.media.conversion.commandline.CommandLineArgument;
 import com.squins.media.conversion.commandline.InputFilePath;
 import com.squins.media.conversion.commandline.Literal;
@@ -14,17 +10,26 @@ import org.gradle.api.Named;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.internal.FactoryNamedDomainObjectContainer;
 import org.gradle.internal.reflect.DirectInstantiator;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.gradle.api.internal.CollectionCallbackActionDecorator.NOOP;
 
 public class MediaConverter implements Named {
     private String name;
     private List<CommandLineArgument> commandLineArguments = new ArrayList<>();
-    private NamedDomainObjectContainer<MediaConverter> variants = new FactoryNamedDomainObjectContainer<>(MediaConverter.class, DirectInstantiator.INSTANCE);
+    private NamedDomainObjectContainer<MediaConverter> variants =
+            new FactoryNamedDomainObjectContainer<>(MediaConverter.class, DirectInstantiator.INSTANCE, MediaConverter::new, NOOP);
     private List<String> optionalVariantProperties = new ArrayList<>();
 
     public MediaConverter(String name) {
         this.name = name;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }

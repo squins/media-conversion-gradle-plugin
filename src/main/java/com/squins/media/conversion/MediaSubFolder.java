@@ -1,9 +1,10 @@
 package com.squins.media.conversion;
 
+import org.gradle.api.Named;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collections;
 import java.util.Set;
-
-import org.gradle.api.Named;
 
 public class MediaSubFolder implements Named {
     private String name;
@@ -13,6 +14,7 @@ public class MediaSubFolder implements Named {
         this.name = name;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
