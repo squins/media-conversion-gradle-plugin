@@ -12,3 +12,10 @@ Various target platforms have different requirements for images, WAVE files, etc
 
 View plugin examples in [Media conversion Gradle plugin examples repository](https://github.com/squins/media-conversion-gradle-plugin-examples)
 
+## Release notes
+
+
+### 0.3
+
+* Support Gradle 5
+* Start of maintaining release-notes
