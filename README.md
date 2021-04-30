@@ -16,7 +16,7 @@ View plugin examples in [Media conversion Gradle plugin examples repository](htt
 
 ### 0.4
 
-* Set change here
+* Release on Maven Central
 
 ### 0.3
 
