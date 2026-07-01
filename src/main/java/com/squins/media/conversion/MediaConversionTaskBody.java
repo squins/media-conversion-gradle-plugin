@@ -7,11 +7,13 @@ import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.UncheckedIOException;
 import org.gradle.tooling.BuildException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,8 +24,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import static org.gradle.util.GFileUtils.copyFile;
 
 class MediaConversionTaskBody implements Action<Task> {
 
@@ -359,7 +359,11 @@ class MediaConversionTaskBody implements Action<Task> {
     private void copy(File inputFile, File outputFile) {
         registerOutputToInputFileMapping(inputFile, outputFile);
         printLine(inputFile);
-        copyFile(inputFile, outputFile);
+        try {
+            Files.copy(inputFile.toPath(), outputFile.toPath());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private void printLine(Object object) {
