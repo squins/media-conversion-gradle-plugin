@@ -3,27 +3,19 @@ package com.squins.media.conversion;
 import com.squins.media.conversion.commandline.CommandLineArgument;
 import com.squins.media.conversion.commandline.OutputFilePath;
 import groovy.lang.GroovyShell;
-import org.gradle.api.Action;
-import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
-import org.gradle.api.UncheckedIOException;
+import org.gradle.api.*;
 import org.gradle.tooling.BuildException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 class MediaConversionTaskBody implements Action<Task> {
 
@@ -360,7 +352,7 @@ class MediaConversionTaskBody implements Action<Task> {
         registerOutputToInputFileMapping(inputFile, outputFile);
         printLine(inputFile);
         try {
-            Files.copy(inputFile.toPath(), outputFile.toPath());
+            Files.copy(inputFile.toPath(), outputFile.toPath(), REPLACE_EXISTING);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
