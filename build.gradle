@@ -15,7 +15,7 @@ plugins {
 }
 
 group 'com.squins.media.conversion'
-version '0.7'
+version '0.8-SNAPSHOT'
 
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
